@@ -207,6 +207,18 @@ a{ color: inherit; text-decoration: none; }
 
 /* ============ Section shared ============ */
 section{ padding: 96px 0; }
+
+/* Skip layout/paint work for offscreen sections until they're near the viewport.
+   contain-intrinsic-size reserves approximate space so scroll position/CLS stay stable. */
+.services, .results, .pricing, .contact{
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 640px;
+}
+.site-footer{
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 360px;
+}
+
 .section-eyebrow{
   text-transform: uppercase; letter-spacing:0.12em; font-size:0.78rem;
   color: var(--accent); font-weight:600; margin-bottom:10px;

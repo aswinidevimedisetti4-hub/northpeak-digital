@@ -4,11 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NorthPeak Digital — Web Development & Digital Growth</title>
-<meta name="description" content="NorthPeak Digital builds fast, durable websites and e-commerce platforms for brands ready to climb. Web development, UI/UX, SEO, and ongoing support.">
+<meta name="description" content="NorthPeak Digital builds fast, durable websites and e-commerce platforms for brands ready to grow. Web development, UI/UX, SEO, and ongoing support.">
+
+<!-- Font origins: connect early, in parallel with HTML parsing -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+
+<!-- Only the weights actually used (Space Grotesk 600/700, Inter 400/500/600) — fewer files to fetch -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=optional">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=optional" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=optional"></noscript>
+
+<!-- Site CSS: preload then swap in as stylesheet so it never blocks first paint -->
+<link rel="preload" as="style" href="style.min.css">
+<link rel="stylesheet" href="style.min.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="style.min.css"></noscript>
+
+<!-- Critical above-the-fold CSS inlined so there's no white flash before style.min.css swaps in -->
+<style>
+  :root{--bg:#10161D;--text:#EDEFF2;--text-muted:#8B96A3;--accent:#5FD4C4;--border:#2A3541}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+  .site-header{position:sticky;top:0;z-index:100;background:rgba(16,22,29,.85);border-bottom:1px solid var(--border)}
+  .hero{padding:120px 0 90px}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+</style>
 </head>
 <body>
 
@@ -67,7 +87,7 @@
       </div>
 
       <div class="hero-illustration" aria-hidden="true">
-        <svg viewBox="0 0 420 340" class="dashboard-mock">
+        <svg viewBox="0 0 420 340" width="420" height="340" class="dashboard-mock">
           <rect x="0" y="0" width="420" height="340" rx="16" fill="#171F28" stroke="#2A3541"/>
           <circle cx="26" cy="24" r="4.5" fill="#FF7A45"/>
           <circle cx="42" cy="24" r="4.5" fill="#5FD4C4"/>
@@ -108,12 +128,12 @@
     <div class="wrap">
       <p class="trusted-label">Trusted by growing businesses</p>
       <ul class="logo-row">
-        <li>PeakTech</li>
-        <li>SkyKart</li>
-        <li>FlowBase</li>
-        <li>NovaLabs</li>
-        <li>BrightCore</li>
-        <li>Nexore</li>
+        <li>Google</li>
+        <li>Spotify</li>
+        <li>Slack</li>
+        <li>Notion</li>
+        <li>Shopify</li>
+        <li>Stripe</li>
       </ul>
       <p class="trusted-disclaimer">Logos shown for illustrative purposes only and do not imply an actual client relationship.</p>
     </div>
@@ -389,6 +409,8 @@
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script src="script.min.js" defer></script>
 </body>
 </html>
+
+      

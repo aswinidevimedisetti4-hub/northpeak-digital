@@ -138,6 +138,7 @@ a{ color: inherit; text-decoration: none; }
 .contour-field{
   position:absolute; inset:0; z-index:0;
   opacity:0.55;
+  will-change: transform;
 }
 .contour-field svg{ width:100%; height:100%; }
 .contour{
@@ -156,6 +157,7 @@ a{ color: inherit; text-decoration: none; }
 .hero-copy{ max-width: 560px; }
 .hero-illustration{
   animation: float 5s ease-in-out infinite;
+  will-change: transform;
 }
 .dashboard-mock{ width:100%; height:auto; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.35)); }
 @keyframes float{
@@ -426,4 +428,3 @@ section h2{ font-size: clamp(1.7rem, 3.4vw, 2.3rem); color:#fff; max-width:640px
   .btn, .service-card{ transition:none; }
   .hero-illustration{ animation:none; }
 }
-

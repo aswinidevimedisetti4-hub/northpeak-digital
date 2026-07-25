@@ -10,8 +10,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<!-- Only the weights actually used (Space Grotesk 600/700, Inter 400/500/600) — fewer files to fetch -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=optional">
+<!-- Only the weights actually used (Space Grotesk 600/700, Inter 400/500/600) — fewer files to fetch.
+     No preload here: with display=optional and full critical-CSS fallback coverage above,
+     the webfont isn't needed for first paint, so it shouldn't compete for bandwidth
+     with style.min.css, which the layout actually depends on. -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=optional" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=optional"></noscript>
 
@@ -20,14 +22,51 @@
 <link rel="stylesheet" href="style.min.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="style.min.css"></noscript>
 
-<!-- Critical above-the-fold CSS inlined so there's no white flash before style.min.css swaps in -->
+<!-- Critical, above-the-fold CSS — mobile-first (matches Lighthouse's default mobile
+     viewport), covers everything visible before scroll so the FIRST paint is already
+     the FINAL layout. This is what actually fixes LCP: previously this block only set
+     background/color, so the browser painted once unstyled, then again once
+     style.min.css arrived and applied the real grid/typography — that second, larger
+     paint is what Chrome was timing as LCP. -->
 <style>
-  :root{--bg:#10161D;--text:#EDEFF2;--text-muted:#8B96A3;--accent:#5FD4C4;--border:#2A3541}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.55}
-  .site-header{position:sticky;top:0;z-index:100;background:rgba(16,22,29,.85);border-bottom:1px solid var(--border)}
-  .hero{padding:120px 0 90px}
-  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+:root{--bg:#10161D;--surface-2:#1D2732;--border:#2A3541;--text:#EDEFF2;--text-muted:#8B96A3;--accent:#5FD4C4;--signal:#FF7A45;--font-display:'Space Grotesk',sans-serif;--font-body:'Inter',sans-serif;--wrap:1160px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.55;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;line-height:1.1;margin:0 0 .5em;letter-spacing:-0.01em}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 26px;border-radius:999px;font-family:var(--font-body);font-weight:600;font-size:.95rem;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:var(--signal);color:#17110C}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+
+.site-header{position:sticky;top:0;z-index:100;background:rgba(16,22,29,.85);border-bottom:1px solid var(--border)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:700;font-size:1.15rem;color:var(--text)}
+.logo-mark{color:var(--accent);display:flex}
+.logo-sub{color:var(--text-muted);font-weight:500}
+.nav-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px}
+.nav-toggle span{width:22px;height:2px;background:var(--text);display:block}
+.nav-list{position:fixed;inset:72px 0 0 0;background:var(--bg);list-style:none;flex-direction:column;align-items:flex-start;padding:30px 24px;gap:22px;margin:0;transform:translateX(100%)}
+.nav-list.is-open{transform:translateX(0)}
+
+.hero{position:relative;padding:100px 0 70px;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:40px;align-items:center}
+.hero-copy{max-width:560px}
+.hero-illustration{order:-1;max-width:420px;margin:0 auto 20px;animation:float 5s ease-in-out infinite;will-change:transform}
+.dashboard-mock{width:100%;height:auto;filter:drop-shadow(0 20px 40px rgba(0,0,0,.35))}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;color:var(--accent);font-weight:600;margin-bottom:18px}
+.hero h1{font-size:clamp(2.4rem,5.4vw,3.6rem);color:#fff}
+.hero-lede{font-size:1.1rem;max-width:520px;color:var(--text-muted);margin:0 0 1em}
+.hero-actions{display:flex;gap:14px;margin:30px 0 56px;flex-wrap:wrap}
+.hero-stats{display:flex;gap:44px;margin:0;padding-top:28px;border-top:1px solid var(--border);flex-wrap:wrap;list-style:none}
+.hero-stats div{display:flex;flex-direction:column}
+.hero-stats dt{font-family:var(--font-display);font-size:1.7rem;font-weight:700;color:#fff;margin:0}
+.hero-stats dd{margin:0;font-size:.82rem;color:var(--text-muted)}
+
+.contour-field{position:absolute;inset:0;z-index:0;opacity:.55;will-change:transform}
 </style>
 </head>
 <body>
@@ -412,5 +451,9 @@
 <script src="script.min.js" defer></script>
 </body>
 </html>
+
+
+       
+
 
       
